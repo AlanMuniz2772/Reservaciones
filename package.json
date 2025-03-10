@@ -11,12 +11,5 @@
   "description": "",
   "devDependencies": {
     "electron": "^35.0.0"
-<<<<<<< HEAD
-  },
-  "dependencies": {
-    "@tailwindcss/cli": "^4.0.12",
-    "tailwindcss": "^4.0.12"
-=======
->>>>>>> 9d2e8a8 (initialize Electron application with basic structure and configuration)
   }
 }

@@ -1,2 +1,0 @@
-VOLVER A UN COMMIT POR SU IDENTIFICACION
-git reset --hard abc1234
