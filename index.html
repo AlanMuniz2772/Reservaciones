@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+<<<<<<< HEAD
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
     <title>Hello from Electron renderer!</title>
@@ -16,4 +17,23 @@
         <p id="errorMsg" class="text-red-500 text-sm mt-2 hidden">Usuario o contraseña incorrectos</p>
     </div>
 </body>
+=======
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <link href="./src/output.css" rel="stylesheet">
+    
+    <title>Hello from Electron renderer!</title>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold underline">
+        Hello world!
+      </h1>
+  </body>
+>>>>>>> 1536316db2ecd72dc9387f9c560a9de61fd6c171
 </html>
