@@ -3,18 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
     <title>Hello from Electron renderer!</title>
   </head>
-  <body>
-    <h1>Hello from Electron renderer!</h1>
-    <p>👋</p>
-  </body>
+  <body class="flex items-center justify-center h-screen bg-gray-200">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h2 class="text-xl font-bold mb-4 text-center">Iniciar Sesión</h2>
+        <input id="username" type="text" placeholder="Usuario" class="w-full p-2 border rounded mb-2">
+        <input id="password" type="password" placeholder="Contraseña" class="w-full p-2 border rounded mb-4">
+        <button id="loginBtn" class="w-full bg-blue-500 text-white p-2 rounded">Ingresar</button>
+        <p id="errorMsg" class="text-red-500 text-sm mt-2 hidden">Usuario o contraseña incorrectos</p>
+    </div>
+</body>
 </html>
