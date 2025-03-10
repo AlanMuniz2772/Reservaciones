@@ -11,5 +11,8 @@
   "description": "",
   "devDependencies": {
     "electron": "^35.0.0"
+  },
+  "dependencies": {
+    "mysql2": "^3.13.0"
   }
 }
