@@ -19,7 +19,5 @@
     const user = JSON.parse(sessionStorage.getItem("user"));
     if (user) {
         document.getElementById("user-name").textContent = user.Nombre;
-    } else {
-        window.location.href = "login.html";
-    }
+    } 
 </script>

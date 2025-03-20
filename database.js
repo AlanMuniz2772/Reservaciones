@@ -1,26 +1,28 @@
-const mysql = require('mysql2');
+const mysql = require("mysql2/promise");
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'user1_abd', // Cambia esto según tu usuario de MySQL
-  password: 'password1', // Si tienes contraseña, agrégala aquí
-  database: 'My_reservacion'
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "user1_abd",
+  password: "password1",
+  database: "My_reservacion",
 });
 
-db.connect(err => {
-  if (err) {
-    console.error('Error al conectar a MySQL:', err);
-  } else {
-    console.log('Conectado a MySQL');
-  }
-});
+module.exports = {
+  login: async (id, password) => {
+    try {
+      const [rows] = await pool.query(
+        "SELECT * FROM empleados WHERE id_empleado = ? AND contraseña = ?",
+        [id, password]
+      );
 
-function login(id, password, callback) {
-    const query = `SELECT * FROM empleados WHERE id_empleado = ? AND contraseña = ?`;
-    db.query(query, [id, password], (err, results) => {
-      if (err) return callback(err);
-      callback(null, results.length > 0 ? results[0] : null);
-    });
-  }
-
-module.exports = { login };
+      if (rows.length > 0) {
+        return { success: true, user: rows[0] };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      console.error("Error de base de datos:", err);
+      return { success: false, message: "Error en base de datos" };
+    }
+  },
+};

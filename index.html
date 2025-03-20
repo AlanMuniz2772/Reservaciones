@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script defer src="renderer.js"></script>
+  <script defer src="login.js"></script>
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
   <title>Reservaciones - Inicio de Sesión</title>
@@ -75,54 +75,6 @@
 </html>
 
 <script>
-  // Detectar Enter y pasar al siguiente input
-  const form = document.getElementById("loginForm");
-  const inputs = form.querySelectorAll("input");
 
-  
-
-  inputs.forEach((input, index) => {
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();  // Evita el envío automático del formulario
-        const nextInput = inputs[index + 1];
-        if (nextInput) {
-          nextInput.focus();
-          } else if (Array.from(inputs).every(input => input.value.trim() !== "")) {
-            const id = document.getElementById('id_empleado').value;
-            const password = document.getElementById('password').value;
-            window.login(id, password);
-          }
-      }
-    });
-  });
-
-  document.getElementById('loginBtn').addEventListener('click', (e) => {
-      e.preventDefault(); // Evita el envío automático del formulario
-
-      const id = document.getElementById('id_empleado').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      if (!id) {
-        // Mostrar mensaje de error si falta algún campo
-        document.getElementById('emptyFieldsMsg').textContent = 'Por favor, ingresa tu ID';
-        document.getElementById('errorMsg').classList.add('hidden');
-      } else if (!password) {
-        // Mostrar mensaje de error si falta algún campo
-        document.getElementById('emptyFieldsMsg').textContent = 'Por favor, ingresa tu contraseña';
-        document.getElementById('errorMsg').classList.add('hidden');
-      } else {
-        // Ocultar mensajes de error y proceder con el login
-        document.getElementById('emptyFieldsMsg').textContent = '';
-        document.getElementById('errorMsg').classList.add('hidden');
-        window.login(id, password);
-      }
-    });
-
-  window.handleLoginError = function(message) {
-    document.getElementById('emptyFieldsMsg').textContent = '';
-    const errorMsg = document.getElementById('errorMsg');
-    errorMsg.classList.remove('hidden');
-  };
 
 </script>
