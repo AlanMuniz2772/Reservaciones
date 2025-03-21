@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain  } = require('electron')
 const path = require('node:path')
+const db = require('./database');
 
 
 
@@ -10,7 +11,6 @@ const createWindow = () => {
     fullscreen: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true, // Habilita `require` en el renderer
       contextIsolation: true
     },
   })
@@ -26,7 +26,7 @@ app.whenReady().then(() => {
   // Manejo del login (llama a la base de datos)
   ipcMain.handle("login", async (event, { id, password }) => {
     try {
-      const result = await require("./database").login(id, password);
+      const result = await db.login(id, password);
 
       if (result.success) {
         return result;
@@ -38,6 +38,11 @@ app.whenReady().then(() => {
       return { success: false, message: "Error en el servidor" };
     }
   });
+
+  ipcMain.handle('getNacionalidad', async (event, id) => await db.getNacionalidad(id));
+  ipcMain.handle('getAllNacionalidades', async () => await db.getAllNacionalidades());
+  ipcMain.handle('saveNacionalidad', async (event, id, nombre) => await db.saveNacionalidad(id, nombre));
+  ipcMain.handle('deleteNacionalidad', async (event, id) => await db.deleteNacionalidad(id));
 
   createWindow()
 

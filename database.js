@@ -1,16 +1,16 @@
 const mysql = require("mysql2/promise");
 
-const pool = mysql.createPool({
+const connection = mysql.createPool({
   host: "localhost",
   user: "user1_abd",
   password: "password1",
   database: "My_reservacion",
 });
 
-module.exports = {
-  login: async (id, password) => {
+
+  async function login(id, password) {
     try {
-      const [rows] = await pool.query(
+      const [rows] = await connection.query(
         "SELECT * FROM empleados WHERE id_empleado = ? AND contraseña = ?",
         [id, password]
       );
@@ -24,5 +24,34 @@ module.exports = {
       console.error("Error de base de datos:", err);
       return { success: false, message: "Error en base de datos" };
     }
-  },
-};
+  }
+
+  async function getNacionalidad(id) {
+    const [rows] = await connection.query('SELECT * FROM nacionalidad WHERE id_Nacionalidad = ?', [id]);
+    return rows[0];
+  }
+  
+  async function getAllNacionalidades() {
+    const [rows] = await connection.query('SELECT * FROM nacionalidad');
+    return rows;
+  }
+  
+  async function saveNacionalidad(id, nombre) {
+    const existing = await getNacionalidad(id);
+    if (existing) {
+      throw new Error('La nacionalidad ya existe');
+    }
+  
+    await connection.query('INSERT INTO nacionalidad (id_Nacionalidad, Nombre) VALUES (?, ?)', [id, nombre]);
+  }
+  
+  async function deleteNacionalidad(id) {
+    const [childRows] = await connection.query('SELECT * FROM hijos WHERE id_Nacionalidad = ?', [id]);
+    if (childRows.length > 0) {
+      throw new Error('No se puede eliminar: tiene registros hijos');
+    }
+  
+    await connection.query('DELETE FROM nacionalidad WHERE id_Nacionalidad = ?', [id]);
+  }
+
+  module.exports = { login, getNacionalidad, getAllNacionalidades, saveNacionalidad, deleteNacionalidad };
