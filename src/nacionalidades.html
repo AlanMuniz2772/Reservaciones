@@ -13,31 +13,39 @@
         <h1 class="text-2xl font-bold mb-4">CRUD Nacionalidad</h1>
         
         <!-- Formulario -->
-        <form id="nacionalidadForm" class="mb-4">
+        <div id="nacionalidadForm" class="mb-4">
           <label for="id_Nacionalidad" class="block font-medium">ID Nacionalidad:</label>
-          <input
+            <input
             type="number"
             id="id_Nacionalidad"
             class="w-full p-2 border rounded mb-2"
+            max="9999999999"
+            oninput="validarLongitud(this)"
             required
-          />
+            />
       
           <label for="Nombre" class="block font-medium">Nombre:</label>
           <input
             type="text"
             id="Nombre"
             class="w-full p-2 border rounded mb-2"
-            maxlength="100"
+            maxlength="45"
             required
           />
       
           <button
-            type="submit"
-            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            id = "guardar"
+            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-2 rounded cursor-pointer"
           >
             Guardar
           </button>
-        </form>
+          <button
+            id="eliminar"
+            class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mb-2 rounded cursor-pointer"
+          >
+            Eliminar
+          </button>
+        </div>
       
         <!-- Tabla -->
         <table class="w-full border-collapse border border-gray-500">
@@ -50,6 +58,20 @@
           <tbody id="nacionalidadTable"></tbody>
         </table>
       </div>
-      
+      <div
+        id="modal"
+        class="fixed inset-0 flex items-center justify-center hidden"
+      >
+        <div class="bg-gray-300 p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+          <h2 id="modal-title" class="text-xl font-bold mb-2">Título del mensaje</h2>
+          <p id="modal-message" class="text-black-700 mb-4">Contenido del mensaje...</p>
+          <button
+            id="close-modal"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
 </body>
 </html>

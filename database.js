@@ -39,14 +39,15 @@ const connection = mysql.createPool({
   async function saveNacionalidad(id, nombre) {
     const existing = await getNacionalidad(id);
     if (existing) {
-      throw new Error('La nacionalidad ya existe');
+      await connection.query('UPDATE nacionalidad SET Nombre = ? WHERE id_Nacionalidad = ?', [nombre, id]);
+      return;
     }
   
     await connection.query('INSERT INTO nacionalidad (id_Nacionalidad, Nombre) VALUES (?, ?)', [id, nombre]);
   }
   
   async function deleteNacionalidad(id) {
-    const [childRows] = await connection.query('SELECT * FROM hijos WHERE id_Nacionalidad = ?', [id]);
+    const [childRows] = await connection.query('SELECT * FROM pasajero WHERE id_Nacionalidad = ?', [id]);
     if (childRows.length > 0) {
       throw new Error('No se puede eliminar: tiene registros hijos');
     }
