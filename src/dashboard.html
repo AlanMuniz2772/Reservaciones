@@ -8,11 +8,23 @@
     <title>Dashboard</title>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
-        <p id="welcome-message" class="text-2xl font-semibold text-gray-800">
-            Bienvenido, <span id="user-name" class="text-blue-500"></span>
-        </p>
+    <div class="bg-white p-8 rounded-lg shadow-lg text-center w-80">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Menú Principal</h1>
+        
+        <nav class="space-y-4">
+            <button id="nacionalidades" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+                Nacionalidades
+            </button>
+            <button class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Opción 2
+            </button>
+            <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">
+                Opción 3
+            </button>
+            <button id="salir" class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Salir
+            </button>
+        </nav>
     </div>
-    <button id="nacionalidades">Nacionalidades</button>
 </body>
 </html>

@@ -24,21 +24,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   // Manejo del login (llama a la base de datos)
-  ipcMain.handle("login", async (event, { id, password }) => {
-    try {
-      const result = await db.login(id, password);
-
-      if (result.success) {
-        return result;
-      } else {
-        return { success: false, message: "ID o contraseña incorrectos" };
-      }
-    } catch (error) {
-      console.error("Error en login:", error);
-      return { success: false, message: "Error en el servidor" };
-    }
-  });
-
+  ipcMain.handle("login", async (event, id, password ) => await db.login(id, password));
   ipcMain.handle('getNacionalidad', async (event, id) => await db.getNacionalidad(id));
   ipcMain.handle('getAllNacionalidades', async () => await db.getAllNacionalidades());
   ipcMain.handle('saveNacionalidad', async (event, id, nombre) => await db.saveNacionalidad(id, nombre));

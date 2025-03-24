@@ -18,7 +18,7 @@ const connection = mysql.createPool({
       if (rows.length > 0) {
         return { success: true, user: rows[0] };
       } else {
-        return { success: false };
+        return { success: false, message: "Usuario o contraseña incorrectos" };
       }
     } catch (err) {
       console.error("Error de base de datos:", err);
@@ -49,10 +49,11 @@ const connection = mysql.createPool({
   async function deleteNacionalidad(id) {
     const [childRows] = await connection.query('SELECT * FROM pasajero WHERE id_Nacionalidad = ?', [id]);
     if (childRows.length > 0) {
-      throw new Error('No se puede eliminar: tiene registros hijos');
+      return { success:false, message: "La nacionalidad tiene elementos  hijos" };
     }
   
     await connection.query('DELETE FROM nacionalidad WHERE id_Nacionalidad = ?', [id]);
+    return { success: true };
   }
 
   module.exports = { login, getNacionalidad, getAllNacionalidades, saveNacionalidad, deleteNacionalidad };

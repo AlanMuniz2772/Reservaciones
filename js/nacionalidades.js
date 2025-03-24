@@ -67,13 +67,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = idInput.value.trim();
   
       if (id) {
-        try {
-          await window.api.deleteNacionalidad(id);
+        result = await window.api.deleteNacionalidad(id);
+        if (result.success) {
           showModal("Eliminado", "Nacionalidad eliminada correctamente", "success");
           await loadTable();
-        } catch (error) {
-            showModal("Error", "La nacionalidad tiene elementos hijos", "error");
-            
+        } else {
+          showModal("Error", result.message, "error");
         }
       }
     });
