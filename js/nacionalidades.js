@@ -74,6 +74,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
           showModal("Error", result.message, "error");
         }
+      }else{
+        showModal("Error", "Por favor, selecciona una nacionalidad", "error");
       }
     });
   
