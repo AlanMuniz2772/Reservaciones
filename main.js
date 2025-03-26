@@ -23,12 +23,11 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  // Manejo del login (llama a la base de datos)
   ipcMain.handle("login", async (event, id, password ) => await db.login(id, password));
-  ipcMain.handle('getNacionalidad', async (event, id) => await db.getNacionalidad(id));
-  ipcMain.handle('getAllNacionalidades', async () => await db.getAllNacionalidades());
-  ipcMain.handle('saveNacionalidad', async (event, id, nombre) => await db.saveNacionalidad(id, nombre));
-  ipcMain.handle('deleteNacionalidad', async (event, id) => await db.deleteNacionalidad(id));
+  ipcMain.handle('getRow', async (event, parameters, data) => await db.getRow(parameters, data));
+  ipcMain.handle('getAll', async (event, parameters) => await db.getAll(parameters));
+  ipcMain.handle('deleteRow', async (event, parameters, data) => await db.deleteRow(parameters, data));
+  ipcMain.handle('saveNacionalidad', async (event, parameters, data) => await db.saveNacionalidad(parameters, data));
 
   createWindow()
 
