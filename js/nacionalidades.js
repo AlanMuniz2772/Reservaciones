@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     idInput.addEventListener('input', async () => {
       const id = idInput.value.trim();
       if (id) {
-        const data = await window.api.getRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
+        const data = await window.db.getRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
         if (data) {
           nameInput.value = data.Nombre;
         } else {
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
       if (id && nombre) {
         try {
-          await window.api.saveNacionalidad({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id, nombre: nombre });
+          await window.db.saveNacionalidad({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id, nombre: nombre });
           showModal("Guardado", "Nacionalidad guardada correctamente", "success");
           await loadTable();
         } catch (error) {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = idInput.value.trim();
   
       if (id) {
-        result = await window.api.deleteRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
+        result = await window.db.deleteRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
         if (result.success) {
           showModal("Eliminado", "Nacionalidad eliminada correctamente", "success");
           await loadTable();
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   
     async function loadTable() {
-      const nacionalidades = await window.api.getAll({ table: "nacionalidad"});
+      const nacionalidades = await window.db.getAll({ table: "nacionalidad"});
       tableBody.innerHTML = nacionalidades
         .map(
           (nac) =>

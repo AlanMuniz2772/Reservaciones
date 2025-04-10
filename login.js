@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       try {
         // 🔥 Llamada al login del main
-        const response = await window.api.login(id, password);
+        const response = await window.db.login(id, password);
   
         if (response.success) {
           console.log("✅ Sesión iniciada correctamente");
