@@ -62,19 +62,19 @@
 
         <div class="flex justify-between mb-2">
             <div class="w-1/2 pr-2">
-                <label for="hora_entrada" class="block font-medium">Hora entrada</label>
+              <label for="hora_salida" class="block font-medium">Hora salida</label>
+              <input 
+                  type="time"
+                  id="hora_salida"
+                  class="w-full p-2 border rounded"
+                  required
+              >
+            </div>
+            <div class="w-1/2 pl-2">
+              <label for="hora_entrada" class="block font-medium">Hora llegada</label>
                 <input 
                     type="time"
                     id="hora_entrada"
-                    class="w-full p-2 border rounded"
-                    required
-                >
-            </div>
-            <div class="w-1/2 pl-2">
-                <label for="hora_salida" class="block font-medium">Hora salida</label>
-                <input 
-                    type="time"
-                    id="hora_salida"
                     class="w-full p-2 border rounded"
                     required
                 >
@@ -103,8 +103,8 @@
                 <th class="border bg-gray-300 border-gray-500 px-4 py-2">Fecha salida</th>
                 <th class="border bg-gray-300 border-gray-500 px-4 py-2">Fecha llegada</th>
                 <th class="border bg-gray-300 border-gray-500 px-4 py-2">Costo</th>
-                <th class="border bg-gray-300 border-gray-500 px-4 py-2">Hora entrada</th>
                 <th class="border bg-gray-300 border-gray-500 px-4 py-2">Hora salida</th>
+                <th class="border bg-gray-300 border-gray-500 px-4 py-2">Hora llegada</th>
             </tr>
           </thead>
           <tbody id="vuelosTable"></tbody>

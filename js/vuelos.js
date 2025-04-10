@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
-    const aeropuertos = await window.api.getAll({ table: "aeropuerto" });
+    const aeropuertos = await window.db.getAll({ table: "aeropuerto" });
     aeropuertoSelect.innerHTML = aeropuertos
       .map(
         (aeropuerto) =>
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       )
       .join('');
 
-      const aerolineas = await window.api.getAll({ table: "aerolinea" });
+      const aerolineas = await window.db.getAll({ table: "aerolinea" });
       aerolineaSelect.innerHTML = aerolineas
         .map(
           (aerolinea) =>
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     idInput.addEventListener('input', async () => {
       const id = idInput.value.trim();
       if (id) {
-        const data = await window.api.getRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
+        const data = await window.db.getRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
         if (data) {
           nameInput.value = data.Nombre;
         } else {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
       if (id && nombre) {
         try {
-          await window.api.saveNacionalidad({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id, nombre: nombre });
+          await window.db.saveNacionalidad({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id, nombre: nombre });
           showModal("Guardado", "Nacionalidad guardada correctamente", "success");
           await loadTable();
         } catch (error) {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const id = idInput.value.trim();
   
       if (id) {
-        result = await window.api.deleteRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
+        result = await window.db.deleteRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
         if (result.success) {
           showModal("Eliminado", "Nacionalidad eliminada correctamente", "success");
           await loadTable();
@@ -102,31 +102,56 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   
     async function loadTable() {
-      const nacionalidades = await window.api.getAll({ table: "nacionalidad"});
-      tableBody.innerHTML = nacionalidades
-        .map(
-          (nac) =>
-           `<tr data-id="${nac.id_Nacionalidad}" data-nombre="${nac.Nombre}" class="cursor-pointer hover:bg-gray-200">
-            <td class="border border-gray-500 px-4 py-2">${nac.id_Vuelo}</td>
-            <td class="border border-gray-500 px-4 py-2">${nac.Nombre}</td>
-          </tr>`
-        )
+      const vuelos = await window.db.getAll({ table: "vuelo" });
+    
+      tableBody.innerHTML = vuelos
+        .map((v) => {
+          // Separar fecha y hora de las columnas datetime
+          const fechaSalida = new Date(v.Fecha_salida);
+          const fechaLlegada = new Date(v.Fecha_llegada);
+    
+          const salidaFecha = fechaSalida.toISOString().split('T')[0]; // yyyy-mm-dd
+          const salidaHora = fechaSalida.toTimeString().split(' ')[0].slice(0, 5); // hh:mm
+    
+          const llegadaFecha = fechaLlegada.toISOString().split('T')[0];
+          const llegadaHora = fechaLlegada.toTimeString().split(' ')[0].slice(0, 5);
+    
+          return `
+            <tr class="cursor-pointer hover:bg-gray-200"
+                data-id="${v.id_Vuelo}"
+                data-fecha-salida="${salidaFecha}"
+                data-hora-salida="${salidaHora}"
+                data-fecha-llegada="${llegadaFecha}"
+                data-hora-llegada="${llegadaHora}"
+                data-costo="${v.Costo}"
+                data-aeropuerto="${v.id_Aeropuerto}"
+                data-aerolinea="${v.id_Aerolinea}">
+              <td class="border border-gray-500 px-4 py-2">${v.id_Vuelo}</td>
+              <td class="border border-gray-500 px-4 py-2">${salidaFecha}</td>
+              <td class="border border-gray-500 px-4 py-2">${llegadaFecha}</td>
+              <td class="border border-gray-500 px-4 py-2">$${v.Costo}</td>
+              <td class="border border-gray-500 px-4 py-2">${salidaHora}</td>
+              <td class="border border-gray-500 px-4 py-2">${llegadaHora}</td>
+            </tr>`;
+        })
         .join('');
-
-        document.querySelectorAll("#nacionalidadTable tr").forEach((row) => {
-          row.addEventListener("click", () => {
-            const id = row.getAttribute("data-id");
-            const nombre = row.getAttribute("data-nombre");
-      
-            // Rellenar los inputs
-            document.getElementById("id_Nacionalidad").value = id;
-            document.getElementById("Nombre").value = nombre;
-      
-            // Dar foco al siguiente input
-            document.getElementById("Nombre").focus();
-          });
+    
+      // Evento para rellenar inputs al dar click en una fila
+      document.querySelectorAll("#vuelosTable tr").forEach((row) => {
+        row.addEventListener("click", () => {
+          console.log(row.getAttribute("data-aeropuerto"));
+          document.getElementById("id_Vuelo").value = row.getAttribute("data-id");
+          document.getElementById("fecha_salida").value = row.getAttribute("data-fecha-salida");
+          document.getElementById("hora_salida").value = row.getAttribute("data-hora-salida");
+          document.getElementById("fecha_llegada").value = row.getAttribute("data-fecha-llegada");
+          document.getElementById("hora_entrada").value = row.getAttribute("data-hora-llegada");
+          document.getElementById("costo").value = row.getAttribute("data-costo");
+          document.getElementById("Aeropuerto").value = row.getAttribute("data-aeropuerto");
+          document.getElementById("Aerolinea").value = row.getAttribute("data-aerolinea");
         });
+      });
     }
+    
 
   
     loadTable();
