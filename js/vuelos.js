@@ -53,15 +53,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     idInput.addEventListener('input', async () => {
       const id = idInput.value.trim();
       if (id) {
-        const data = await window.db.getRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
+        const data = await window.db.getRow({ table: 'vuelo', column: 'id_Vuelo' }, { id: id });
         if (data) {
-          nameInput.value = data.Nombre;
+          console.log(data);
+
+          const fechaSalida = new Date(data.Fecha_salida);
+          const fechaLlegada = new Date(data.Fecha_llegada);
+
+          
+          idInput.value = data.id_Vuelo;
+          aeropuertoSelect.value = data.id_Aeropuerto;
+          aerolineaSelect.value = data.id_Aerolinea;
+
+          fechaSalidaInput.value = fechaSalida.toISOString().split('T')[0]; // yyyy-mm-dd
+          horaSalida.value = fechaSalida.toTimeString().split(' ')[0].slice(0, 5); // hh:mm
+
+          fechaLlegadaInput.value = fechaLlegada.toISOString().split('T')[0];
+          horaEntrada.value = fechaLlegada.toTimeString().split(' ')[0].slice(0, 5); // hh:mm
+
+          costoInput.value = data.Costo;
         } else {
-          nameInput.value = '';
+          idInput.value = id; // Mantener el ID ingresado si no se encuentra en la base de datos
+          aeropuertoSelect.value = '';
+          aerolineaSelect.value = '';
+          fechaSalidaInput.value = '';
+          horaSalida.value = '';
+          fechaLlegadaInput.value = '';
+          horaEntrada.value = '';
+          costoInput.value = '';
         }
       }
       else {
-        nameInput.value = '';
+        aeropuertoSelect.value = '';
+        aerolineaSelect.value = '';
+        fechaSalidaInput.value = '';
+        horaSalida.value = '';
+        fechaLlegadaInput.value = '';
+        horaEntrada.value = '';
+        costoInput.value = '';
       }
     });
     
@@ -69,16 +98,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     saveButton.addEventListener('click', async () => {
       const id = idInput.value.trim();
-      const nombre = nameInput.value.trim();
+      const id_Aerolinea = aerolineaSelect.value;
+      const id_Aeropuerto = aeropuertoSelect.value;
+      const fechaSalida = fechaSalidaInput.value.trim() + " " + horaSalida.value.trim() + ":00";
+      const fechaLlegada = fechaLlegadaInput.value.trim() + " " + horaEntrada.value.trim() + ":00";
+      const costo = costoInput.value.trim();
   
-      if (id && nombre) {
+      if (id && id_Aerolinea && id_Aeropuerto && fechaSalida && fechaLlegada && costo) {
         try {
-          await window.db.saveNacionalidad({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id, nombre: nombre });
-          showModal("Guardado", "Nacionalidad guardada correctamente", "success");
+          await window.db.saveVuelo({ table: 'vuelo', column: 'id_Vuelo' }, { id: id, id_Aerolinea: id_Aerolinea, id_Aeropuerto: id_Aeropuerto, fechaSalida: fechaSalida, fechaLlegada: fechaLlegada, costo: costo });
+          showModal("Guardado", "Vuelo guardado correctamente", "success");
           await loadTable();
         } catch (error) {
-            showModal("Error", "Error al guardar la nacionalidad", "error");
-            
+          console.error("Error al guardar el vuelo:", error);
+            showModal("Error", "Error al guardar el vuelo", "error");
         }
       }else{
         showModal("Error", "Por favor, rellena todos los campos", "error");
@@ -87,17 +120,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     deleteButton.addEventListener('click', async () => {
       const id = idInput.value.trim();
-  
+      console.log("eliminar")
       if (id) {
-        result = await window.db.deleteRow({ table: 'nacionalidad', column: 'id_Nacionalidad' }, { id: id });
+        result = await window.db.deleteRow({ table: 'vuelo', column: 'id_Vuelo' }, { id: id });
         if (result.success) {
-          showModal("Eliminado", "Nacionalidad eliminada correctamente", "success");
+          showModal("Eliminado", "Vuelo eliminado correctamente", "success");
           await loadTable();
         } else {
           showModal("Error", result.message, "error");
         }
       }else{
-        showModal("Error", "Por favor, selecciona una nacionalidad", "error");
+        showModal("Error", "Por favor, selecciona un vuelo", "error");
       }
     });
   

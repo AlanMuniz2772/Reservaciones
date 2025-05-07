@@ -64,4 +64,14 @@ const connection = mysql.createPool({
     await connection.query('INSERT INTO nacionalidad (id_Nacionalidad, Nombre) VALUES (?, ?)', [data.id, data.nombre]);
   }
 
-  module.exports = { login, getRow, getAll, saveNacionalidad, deleteRow };
+  async function saveVuelo(parameters, data) {
+    const existing = await getRow(parameters, data);
+    if (existing) {
+      await connection.query('UPDATE vuelo SET id_Aerolinea = ?,  id_Aeropuerto = ?, Fecha_salida = ?, Fecha_llegada = ?, costo = ? WHERE id_Vuelo = ?;', [data.id_Aerolinea, data.id_Aeropuerto, data.fechaSalida, data.fechaLlegada, data.costo, data.id]);
+      return;
+    }
+  
+    await connection.query('INSERT INTO vuelo (id_Vuelo, id_Aerolinea, id_Aeropuerto, Fecha_salida, Fecha_llegada, Costo) VALUES (?, ?, ?, ?, ?, ?)', [data.id, data.id_Aerolinea, data.id_Aeropuerto, data.fechaSalida, data.fechaLlegada, data.costo]);
+  }
+
+  module.exports = { login, getRow, getAll, saveNacionalidad, deleteRow, saveVuelo };

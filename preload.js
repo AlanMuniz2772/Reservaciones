@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld("db", {
   getAll: (parameters) => ipcRenderer.invoke('getAll', parameters),
   deleteRow: (parameters, data) => ipcRenderer.invoke('deleteRow', parameters, data),
   saveNacionalidad: (parameters, data) => ipcRenderer.invoke('saveNacionalidad', parameters, data),
-  navigate: (page) => ipcRenderer.send("navigate", page),
+  saveVuelo: (parameters, data) => ipcRenderer.invoke('saveVuelo', parameters, data),
 });
 
 contextBridge.exposeInMainWorld("api", {
