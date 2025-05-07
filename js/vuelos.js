@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveButton = document.getElementById('guardar');
     const deleteButton = document.getElementById('eliminar');
     const tableBody = document.getElementById('vuelosTable');
+    const nombreUsuario = document.getElementById('usuario');
+    const fechaActual = document.getElementById('fecha_actual');
   
     // Agregamos el evento keydown a cada input
     inputs.forEach((input, index) => {
@@ -186,8 +188,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
 
-  
+    if (usuario) {
+      const usuarioObj = JSON.parse(usuario);
+      nombre_usuario = usuarioObj.Apaterno + " " + usuarioObj.Amaterno;
+      nombreUsuario.innerHTML = nombre_usuario;
+    } else {
+      showModal("Error", "Usuario no encontrado en la sesión", "error");
+    }
+
+    // Obtener la fecha actual
+    const fecha = new Date();
+    fechaActual.innerHTML = fecha.toDateString();
     loadTable();
+
   });
 
   function showModal(title, message, type = "info") {
@@ -222,3 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       input.value = input.value.slice(0, 10);
     }
   }
+
+  // Obtener el usuario desde sessionStorage y mostrarlo en el elemento correspondiente
+  const usuario = sessionStorage.getItem('user');
+  

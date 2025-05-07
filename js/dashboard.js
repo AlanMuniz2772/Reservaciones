@@ -15,3 +15,10 @@ document.getElementById("salir").addEventListener("click", () => {
     sessionStorage.removeItem("user");
     window.api.navigate("./index.html");
 });
+
+nombreUsuario = document.getElementById("usuario");
+const usuario = sessionStorage.getItem('user');
+if (usuario) {
+    const user = JSON.parse(usuario);
+    nombreUsuario.innerHTML = "Bienvenido " + user.Nombre;
+}
