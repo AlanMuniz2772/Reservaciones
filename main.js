@@ -29,6 +29,7 @@ app.whenReady().then(() => {
   ipcMain.handle('deleteRow', async (event, parameters, data) => await db.deleteRow(parameters, data));
   ipcMain.handle('saveNacionalidad', async (event, parameters, data) => await db.saveNacionalidad(parameters, data));
   ipcMain.handle('saveVuelo', async (event, parameters, data) => await db.saveVuelo(parameters, data));
+  ipcMain.handle('selectAll', async (event, parameters, data) => await db.selectAll(parameters, data));
 
   createWindow()
 

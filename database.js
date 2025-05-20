@@ -71,7 +71,20 @@ const connection = mysql.createPool({
       return;
     }
   
-    await connection.query('INSERT INTO vuelo (id_Vuelo, id_Aerolinea, id_Aeropuerto, Fecha_salida, Fecha_llegada, Costo) VALUES (?, ?, ?, ?, ?, ?)', [data.id, data.id_Aerolinea, data.id_Aeropuerto, data.fechaSalida, data.fechaLlegada, data.costo]);
+    resultado = await getId_Aerolinea_Aeropuerto(data);
+    await connection.query('INSERT INTO vuelo (id_Vuelo, id_Aerolinea_Aeropuerto, Fecha_salida, Fecha_llegada, Costo) VALUES (?, ?, ?, ?, ?)', [data.id, resultado.id_aeropuerto_aerolinea, data.fechaSalida, data.fechaLlegada, data.costo]);
   }
 
-  module.exports = { login, getRow, getAll, saveNacionalidad, deleteRow, saveVuelo };
+
+  async function selectAll(parameters, data) {
+    const query = `SELECT * FROM ${parameters.table} WHERE ${parameters.column} = ?`;
+    const [rows] = await connection.query(query, [data.id]);
+    return rows;
+  }
+
+  async function getId_Aerolinea_Aeropuerto(data) {
+    const query = `SELECT id_aeropuerto_aerolinea FROM Aeropuerto_aerolinea WHERE id_Aeropuerto = ? AND id_Aerolinea = ?`;
+    const [rows] = await connection.query(query, [data.id_Aeropuerto, data.id_Aerolinea]);
+    return rows[0];
+  }
+  module.exports = { login, getRow, getAll, saveNacionalidad, deleteRow, saveVuelo, selectAll };

@@ -37,55 +37,61 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     const aeropuertos = await window.db.getAll({ table: "aeropuerto" });
-    aeropuertoSelect.innerHTML = aeropuertos
+    aeropuertoSelect.innerHTML = `
+      <option value="">Seleccione Aeropuerto</option>
+      ${aeropuertos
       .map(
         (aeropuerto) =>
-          `<option value="${aeropuerto.id_Aeropuerto}">${aeropuerto.Nombre}</option>`
+        `<option value="${aeropuerto.id_Aeropuerto}">${aeropuerto.Nombre}</option>`
       )
-      .join('');
+      .join('')}`;
 
-      const aerolineas = await window.db.getAll({ table: "aerolinea" });
-      aerolineaSelect.innerHTML = aerolineas
-        .map(
-          (aerolinea) =>
-            `<option value="${aerolinea.id_Aerolinea}">${aerolinea.Nombre}</option>`
-        )
-        .join('');
+      // const aerolineas = await window.db.getAll({ table: "aerolinea" });
+      // aerolineaSelect.innerHTML = `
+      //   <option value="">Seleccione Aerolínea</option>
+      //   ${aerolineas
+      //     .map(
+      //   (aerolinea) =>
+      //     `<option value="${aerolinea.id_Aerolinea}">${aerolinea.Nombre}</option>`
+      //     )
+      //     .join('')}`;
+
+
+    aeropuertoSelect.addEventListener('change', async () => {
+      const id = aeropuertoSelect.value;
+      if (id) {
+        const resultados = await window.db.selectAll({ table: 'Aeropuerto_aerolinea', column: 'id_Aeropuerto' }, { id: id });
+        if (resultados) {
+          const aerolineas = [];
+
+          for (const resultado of resultados) {
+            const idAerolinea = resultado.id_Aerolinea;
+            const aerolinea = await window.db.getRow(
+              { table: 'aerolinea', column: 'id_Aerolinea' },
+              { id: idAerolinea }
+            );
+            aerolineas.push(aerolinea); // Guardamos el objeto en la lista
+          }
+          console.log(aerolineas);
+          if (aerolineas) {
+              aerolineaSelect.innerHTML = `
+                <option value="">Seleccione Aerolínea</option>
+                ${aerolineas
+                  .map(
+                (aerolinea) =>
+                  `<option value="${aerolinea.id_Aerolinea}">${aerolinea.Nombre}</option>`
+                )
+                .join('')}`
+            };
+        } else {
+          console.error("Sin aerolineas");
+        }
+      }
+    });
 
     idInput.addEventListener('input', async () => {
       const id = idInput.value.trim();
-      if (id) {
-        const data = await window.db.getRow({ table: 'vuelo', column: 'id_Vuelo' }, { id: id });
-        if (data) {
-          console.log(data);
-
-          const fechaSalida = new Date(data.Fecha_salida);
-          const fechaLlegada = new Date(data.Fecha_llegada);
-
-          
-          idInput.value = data.id_Vuelo;
-          aeropuertoSelect.value = data.id_Aeropuerto;
-          aerolineaSelect.value = data.id_Aerolinea;
-
-          fechaSalidaInput.value = fechaSalida.toISOString().split('T')[0]; // yyyy-mm-dd
-          horaSalida.value = fechaSalida.toTimeString().split(' ')[0].slice(0, 5); // hh:mm
-
-          fechaLlegadaInput.value = fechaLlegada.toISOString().split('T')[0];
-          horaEntrada.value = fechaLlegada.toTimeString().split(' ')[0].slice(0, 5); // hh:mm
-
-          costoInput.value = data.Costo;
-        } else {
-          idInput.value = id; // Mantener el ID ingresado si no se encuentra en la base de datos
-          aeropuertoSelect.value = '';
-          aerolineaSelect.value = '';
-          fechaSalidaInput.value = '';
-          horaSalida.value = '';
-          fechaLlegadaInput.value = '';
-          horaEntrada.value = '';
-          costoInput.value = '';
-        }
-      }
-      else {
+      if (id == '') { 
         aeropuertoSelect.value = '';
         aerolineaSelect.value = '';
         fechaSalidaInput.value = '';
@@ -150,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
           const llegadaFecha = fechaLlegada.toISOString().split('T')[0];
           const llegadaHora = fechaLlegada.toTimeString().split(' ')[0].slice(0, 5);
-    
+          
           return `
             <tr class="cursor-pointer hover:bg-gray-200"
                 data-id="${v.id_Vuelo}"
@@ -159,8 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 data-fecha-llegada="${llegadaFecha}"
                 data-hora-llegada="${llegadaHora}"
                 data-costo="${v.Costo}"
-                data-aeropuerto="${v.id_Aeropuerto}"
-                data-aerolinea="${v.id_Aerolinea}">
+                data-aeropuerto-aerolinea="${v.id_Aerolinea_Aeropuerto}">
               <td class="border border-gray-500 px-4 py-2">${v.id_Vuelo}</td>
               <td class="border border-gray-500 px-4 py-2">${salidaFecha}</td>
               <td class="border border-gray-500 px-4 py-2">${llegadaFecha}</td>
@@ -173,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
       // Evento para rellenar inputs al dar click en una fila
       document.querySelectorAll("#vuelosTable tr").forEach((row) => {
-        row.addEventListener("click", () => {
+        row.addEventListener("click", async () => {
           console.log(row.getAttribute("data-aeropuerto"));
           document.getElementById("id_Vuelo").value = row.getAttribute("data-id");
           document.getElementById("fecha_salida").value = row.getAttribute("data-fecha-salida");
@@ -181,8 +186,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           document.getElementById("fecha_llegada").value = row.getAttribute("data-fecha-llegada");
           document.getElementById("hora_entrada").value = row.getAttribute("data-hora-llegada");
           document.getElementById("costo").value = row.getAttribute("data-costo");
-          document.getElementById("Aeropuerto").value = row.getAttribute("data-aeropuerto");
-          document.getElementById("Aerolinea").value = row.getAttribute("data-aerolinea");
+
+          const aeropuerto_aerolinea = row.getAttribute("data-aeropuerto-aerolinea");
+          respuesta = await window.db.getRow({ table: 'aeropuerto_aerolinea', column: 'id_Aeropuerto_Aerolinea' }, { id: aeropuerto_aerolinea });
+          console.log(respuesta);
+          document.getElementById("Aeropuerto").value = respuesta.id_Aeropuerto;
+          document.getElementById("Aerolinea").value = respuesta.id_Aerolinea;
         });
       });
     }
@@ -190,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (usuario) {
       const usuarioObj = JSON.parse(usuario);
-      nombre_usuario = usuarioObj.Apaterno + " " + usuarioObj.Amaterno;
+      nombre_usuario = " - " + usuarioObj.Apaterno + " " + usuarioObj.Amaterno;
       nombreUsuario.innerHTML = nombre_usuario;
     } else {
       showModal("Error", "Usuario no encontrado en la sesión", "error");
@@ -198,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Obtener la fecha actual
     const fecha = new Date();
-    fechaActual.innerHTML = fecha.toDateString();
+    fechaActual.innerHTML = `${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}`;
     loadTable();
 
   });
